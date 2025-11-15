@@ -1,0 +1,18 @@
+[server]
+port = "8080"
+read_timeout = "30s"
+write_timeout = "30s"
+max_header_bytes = 1048576
+
+[log]
+level = "info"
+format = "json"
+output = "stdout"
+
+[database]
+driver = "mysql"
+host = "localhost"
+port = 3306
+name = "demo"
+user = "root"
+password = "mysql"
