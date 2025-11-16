@@ -17,14 +17,15 @@ import (
 )
 
 var (
-	mysqlDB    *bun.DB
-	postgresDB *bun.DB
-	dbOnce     sync.Once
+	mysqlDB      *bun.DB
+	postgresDB   *bun.DB
+	mysqlOnce    sync.Once
+	postgresOnce sync.Once
 )
 
 // GetDB returns the shared database instance, initializing it if necessary
 func GetMySQLDB() *bun.DB {
-	dbOnce.Do(func() {
+	mysqlOnce.Do(func() {
 		cfg := config.GetConfig()
 
 		// Initialize database connection
@@ -57,7 +58,7 @@ func GetMySQLDB() *bun.DB {
 	return mysqlDB
 }
 func GetPostgresDB() *bun.DB {
-	dbOnce.Do(func() {
+	postgresOnce.Do(func() {
 		cfg := config.GetConfig()
 		// Initialize PostgreSQL database connection
 		dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
