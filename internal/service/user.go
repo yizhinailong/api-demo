@@ -10,6 +10,12 @@ import (
 	"github.com/yizhinailong/api-demo/internal/repository"
 )
 
+// UserServiceInterface defines the interface for user service operations
+type UserServiceInterface interface {
+	GetUser(ctx context.Context, input *GetUserInput) (*model.User, error)
+	CreateUser(ctx context.Context, input *CreateUserInput) (*model.User, error)
+}
+
 type UserService struct {
 	mysqlRepo    repository.UserRepository
 	postgresRepo repository.UserRepository

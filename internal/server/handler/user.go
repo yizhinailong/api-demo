@@ -21,7 +21,7 @@ func init() {
 }
 
 type UserHandler struct {
-	userService *service.UserService
+	userService service.UserServiceInterface
 }
 
 func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
