@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, user *model.User) error // 注意使用 model.User
+	Create(ctx context.Context, user *model.User) error
 	GetByID(ctx context.Context, id int64) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
 	Delete(ctx context.Context, id int64) error

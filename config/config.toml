@@ -9,10 +9,16 @@ level = "info"
 format = "json"
 output = "stdout"
 
-[database]
-driver = "mysql"
+[database.mysql]
 host = "localhost"
 port = 3306
 name = "demo"
 user = "root"
 password = "mysql"
+
+[database.postgres]
+host = "localhost"
+port = 5432
+name = "demo"
+user = "postgres"
+password = "postgresql"

@@ -28,7 +28,19 @@ type LogConfig struct {
 }
 
 type DatabaseConfig struct {
-	Driver   string `toml:"driver"`
+	MySQL    MySQLConfig    `toml:"mysql"`
+	Postgres PostgresConfig `toml:"postgres"`
+}
+
+type MySQLConfig struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	Name     string `toml:"name"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+}
+
+type PostgresConfig struct {
 	Host     string `toml:"host"`
 	Port     int    `toml:"port"`
 	Name     string `toml:"name"`
@@ -96,10 +108,15 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("log.output", "stdout")
 
 	// Database defaults
-	v.SetDefault("database.driver", "mysql")
-	v.SetDefault("database.host", "localhost")
-	v.SetDefault("database.port", 3306)
-	v.SetDefault("database.name", "demo")
-	v.SetDefault("database.user", "root")
-	v.SetDefault("database.password", "mysql")
+	v.SetDefault("database.mysql.host", "localhost")
+	v.SetDefault("database.mysql.port", 3306)
+	v.SetDefault("database.mysql.name", "demo")
+	v.SetDefault("database.mysql.user", "root")
+	v.SetDefault("database.mysql.password", "mysql")
+
+	v.SetDefault("database.postgres.host", "localhost")
+	v.SetDefault("database.postgres.port", 5432)
+	v.SetDefault("database.postgres.name", "demo")
+	v.SetDefault("database.postgres.user", "postgres")
+	v.SetDefault("database.postgres.password", "postgresql")
 }

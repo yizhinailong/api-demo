@@ -2,11 +2,9 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/yizhinailong/api-demo/internal/repository"
 	"github.com/yizhinailong/api-demo/internal/service"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,8 +14,7 @@ import (
 
 func init() {
 	// Initialize repository and service
-	userRepo := repository.NewUserMySQLRepository(repository.GetDB())
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService()
 
 	// Register handler with initialized service
 	router.Register(&UserHandler{userService: userService})
@@ -31,7 +28,7 @@ func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 	group := r.Group("/users")
 	{
 		group.POST("/create", h.CreateUser)
-		group.GET("/:id", h.GetUser)
+		group.GET("/get", h.GetUser)
 	}
 }
 
@@ -42,26 +39,23 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if _, err := h.userService.CreateUser(c, &input); err != nil {
+	if user, err := h.userService.CreateUser(c, &input); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
-		c.Writer.WriteHeader(http.StatusOK)
+		c.JSON(http.StatusOK, gin.H{"status": "user created", "userID": user.ID})
 	}
 }
 
 func (h *UserHandler) GetUser(c *gin.Context) {
-	id := c.Param("id")
-
-	userID, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id format"})
+	var input service.GetUserInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := h.userService.GetUser(c, userID)
-	if err != nil {
+	if user, err := h.userService.GetUser(c, &input); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+	} else {
+		c.JSON(http.StatusOK, user)
 	}
-	c.JSON(http.StatusOK, user)
 }

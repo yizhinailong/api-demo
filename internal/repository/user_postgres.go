@@ -8,20 +8,20 @@ import (
 	"github.com/yizhinailong/api-demo/internal/model"
 )
 
-type userMySQLRepo struct {
+type userPostgresRepo struct {
 	db *bun.DB
 }
 
-// NewUserMySQLRepository creates a new MySQL user repository
-func NewUserMySQLRepository() UserRepository {
-	db := GetMySQLDB()
+// NewUserPostgresRepository creates a new PostgreSQL user repository
+func NewUserPostgresRepository() UserRepository {
+	db := GetPostgresDB()
 	if db == nil {
 		return nil
 	}
-	return &userMySQLRepo{db: db}
+	return &userPostgresRepo{db: db}
 }
 
-func (r *userMySQLRepo) Create(ctx context.Context, user *model.User) error {
+func (r *userPostgresRepo) Create(ctx context.Context, user *model.User) error {
 	_, err := r.db.NewInsert().Model(user).Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("创建用户失败: %w", err)
@@ -29,7 +29,7 @@ func (r *userMySQLRepo) Create(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-func (r *userMySQLRepo) GetByID(ctx context.Context, id int64) (*model.User, error) {
+func (r *userPostgresRepo) GetByID(ctx context.Context, id int64) (*model.User, error) {
 	var user model.User
 	err := r.db.NewSelect().Model(&user).Where("id = ?", id).Scan(ctx)
 	if err != nil {
@@ -38,7 +38,7 @@ func (r *userMySQLRepo) GetByID(ctx context.Context, id int64) (*model.User, err
 	return &user, nil
 }
 
-func (r *userMySQLRepo) Update(ctx context.Context, user *model.User) error {
+func (r *userPostgresRepo) Update(ctx context.Context, user *model.User) error {
 	_, err := r.db.NewUpdate().Model(user).WherePK().Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("更新用户失败: %w", err)
@@ -46,7 +46,7 @@ func (r *userMySQLRepo) Update(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-func (r *userMySQLRepo) Delete(ctx context.Context, id int64) error {
+func (r *userPostgresRepo) Delete(ctx context.Context, id int64) error {
 	user := &model.User{ID: id}
 	_, err := r.db.NewDelete().Model(user).WherePK().Exec(ctx)
 	if err != nil {
@@ -55,7 +55,7 @@ func (r *userMySQLRepo) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (r *userMySQLRepo) List(ctx context.Context) ([]*model.User, error) {
+func (r *userPostgresRepo) List(ctx context.Context) ([]*model.User, error) {
 	var users []*model.User
 	err := r.db.NewSelect().Model(&users).Scan(ctx)
 	if err != nil {
